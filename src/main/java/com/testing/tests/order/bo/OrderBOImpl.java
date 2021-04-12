@@ -14,6 +14,10 @@ public class OrderBOImpl implements OrderBO{
         this.dao = dao;
     }
 
+    public OrderBOImpl() {
+
+    }
+
     public OrderDAO getDao (){
         return dao;
     }
