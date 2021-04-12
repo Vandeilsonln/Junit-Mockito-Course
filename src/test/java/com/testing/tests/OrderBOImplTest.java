@@ -63,4 +63,36 @@ public class OrderBOImplTest {
         } );
 
     }
+
+    @Test
+    public void cancelOrderShouldCancelTheOrder() throws SQLException, BOException {
+        OrderDTO orderDTO = new OrderDTO();
+        when(dao.read(123))
+                .thenReturn(orderDTO);
+
+        when(dao.update(orderDTO))
+                .thenReturn(1);
+
+        boolean result = bo.cancelOrder(123);
+        assertTrue(result);
+
+        verify(dao).read(123);
+        verify(dao).update(orderDTO);
+    }
+
+    @Test
+    public void cancelOrderShouldNotCancelTheOrder() throws SQLException, BOException {
+        OrderDTO orderDTO = new OrderDTO();
+        when(dao.read(123))
+                .thenReturn(orderDTO);
+
+        when(dao.update(orderDTO))
+                .thenReturn(0);
+
+        boolean result = bo.cancelOrder(123);
+        assertFalse(result);
+
+        verify(dao).read(123);
+        verify(dao).update(orderDTO);
+    }
 }
