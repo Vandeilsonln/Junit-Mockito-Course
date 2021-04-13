@@ -16,6 +16,8 @@ import static org.mockito.Mockito.*;
 
 public class OrderBOImplTest {
 
+    private static final int ORDER_ID = 123;
+
     @Mock
     OrderDAO dao;
     private OrderBOImpl bo;
@@ -32,7 +34,7 @@ public class OrderBOImplTest {
 
         OrderDTO orderDTO = new OrderDTO();
 
-        when(dao.create(orderDTO))
+        when(dao.create(any(OrderDTO.class)))
                 .thenReturn(1);
 
         boolean result = bo.placeOrder(orderDTO);
@@ -49,7 +51,7 @@ public class OrderBOImplTest {
 
         boolean result = bo.placeOrder(orderDTO);
         assertFalse(result);
-        verify(dao).create(orderDTO);   // Make sure this method is getting called
+        verify(dao, atLeast(1)).create(orderDTO);   // Make sure this method is getting called
     }
 
     @Test()
@@ -76,7 +78,7 @@ public class OrderBOImplTest {
         boolean result = bo.cancelOrder(123);
         assertTrue(result);
 
-        verify(dao).read(123);
+        verify(dao, times(1)).read(123);
         verify(dao).update(orderDTO);
     }
 
@@ -116,16 +118,16 @@ public class OrderBOImplTest {
     @Test
     public void cancelOrderShouldThrowBOExceptionOnRead() throws SQLException {
         OrderDTO orderDTO = new OrderDTO();
-        when(dao.read(123))
+        when(dao.read(anyInt()))
                 .thenThrow(SQLException.class);
 
         when(dao.update(orderDTO))
                 .thenReturn(0);
 
         assertThrows(BOException.class, () -> {
-            bo.cancelOrder(123);
+            bo.cancelOrder(anyInt());
         });
 
-        verify(dao).read(123);
+        verify(dao).read(anyInt());
     }
 }
