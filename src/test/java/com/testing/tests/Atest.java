@@ -28,5 +28,5 @@ public class Atest {
         assertEquals(1, a.usesVoidMethod());
         verify(b, times(1)).voidMethod();
     }
-    
+
 }
